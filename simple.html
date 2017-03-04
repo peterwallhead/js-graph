@@ -2,86 +2,84 @@
           integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
           crossorigin="anonymous"></script>
 <script>
-var makeGraph = (function() {
-    console.log('Graph init');
+var MakeGraph = function () {
+  console.log('Graph init')
 
-    graph = {};
+  var graph = {}
 
-    function contains(node) {
-        return graph[node];
+  function contains (node) {
+    return graph[node]
+  }
+
+  return {
+
+    addVertex: function (node) {
+      if (!contains(node)) {
+        graph[node] = {edges: {}}
+      }
+      console.log(graph)
+    },
+
+    removeVertex: function (node) {
+      // Iterate through each node's edges and remove relationships
+      for (var vertex in graph) {
+        for (var edge in graph[vertex]) {
+          delete graph[vertex][edge][node]
+        }
+      }
+
+      delete graph[node]
+      console.log(graph)
+    },
+
+    searchVertex: function (node) {
+      if (contains(node)) {
+        console.log(graph[node])
+      }
+    },
+
+    addEdge: function (startNode, endNode) {
+      // Only if both nodes exist
+      // Add each node to the others edge list
+
+      if (contains(startNode) && contains(endNode)) {
+        graph[startNode].edges[endNode] = true
+        graph[endNode].edges[startNode] = true
+      }
+      console.log(graph)
+    },
+
+    removeEdge: function (startNode, endNode) {
+      // Only if both nodes exist
+      // Remove relationship
+
+      if (contains(startNode) && contains(endNode)) {
+        delete graph[startNode].edges[endNode]
+        delete graph[endNode].edges[startNode]
+      }
+      console.log(graph)
+    },
+
+    searchEdge: function (startNode, endNode) {
+      if (graph[startNode].edges[endNode] && graph[endNode].edges[startNode]) {
+        console.log(startNode + ' <-> ' + endNode)
+      }
     }
+  }
+}
 
-    return {
+$(document).ready(function () {
+  var simpleGraph = new MakeGraph()
 
-        addVertex: function(node) {
-            if(!contains(node)) {
-                graph[node] = {edges:{}};
-            }
-            console.log(graph);
-        },
+  simpleGraph.addVertex('Neil Armstrong')
+  simpleGraph.addVertex('Buzz Aldrin')
+  simpleGraph.addVertex('Michael Collins')
 
-        removeVertex: function(node) {
-            //Iterate through each node's edges and remove relationships
-            for (var vertex in graph) {
-                for (var edge in graph[vertex]) {
-                    delete graph[vertex][edge][node];
-                }
-            }
+  simpleGraph.addEdge('Neil Armstrong', 'Buzz Aldrin')
+  simpleGraph.searchEdge('Neil Armstrong', 'Buzz Aldrin')
+  simpleGraph.removeEdge('Neil Armstrong', 'Buzz Aldrin')
 
-            delete graph[node];
-            console.log(graph);
-        },
-
-        searchVertex: function(node) {
-            if(contains(node)) {
-                console.log(graph[node]);
-            }
-        },
-
-        addEdge: function(startNode, endNode) {
-            // Only if both nodes exist
-            // Add each node to the others edge list
-
-            if(contains(startNode) && contains(endNode)) {
-                graph[startNode].edges[endNode] = true;
-                graph[endNode].edges[startNode] = true;
-            }
-            console.log(graph);
-        },
-
-        removeEdge: function(startNode, endNode) {
-            // Only if both nodes exist
-            // Remove relationship
-
-            if(contains(startNode) && contains(endNode)) {
-                delete graph[startNode].edges[endNode];
-                delete graph[endNode].edges[startNode];
-            }
-            console.log(graph);
-        },
-
-        searchEdge: function(startNode, endNode) {
-            if(graph[startNode].edges[endNode] && graph[endNode].edges[startNode]) {
-                console.log(startNode+' <-> '+endNode);
-            }
-        },
-    }
-});
-
-$(document).ready(function() {
-
-    var simpleGraph = new makeGraph();
-
-    simpleGraph.addVertex('Neil Armstrong');
-    simpleGraph.addVertex('Buzz Aldrin');
-    simpleGraph.addVertex('Michael Collins');
-
-    simpleGraph.addEdge('Neil Armstrong','Buzz Aldrin');
-    simpleGraph.searchEdge('Neil Armstrong','Buzz Aldrin');
-    simpleGraph.removeEdge('Neil Armstrong','Buzz Aldrin');
-
-    simpleGraph.searchVertex('Michael Collins');
-    simpleGraph.removeVertex('Michael Collins');
-
-});
+  simpleGraph.searchVertex('Michael Collins')
+  simpleGraph.removeVertex('Michael Collins')
+})
 </script>
